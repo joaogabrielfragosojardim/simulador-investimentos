@@ -1,7 +1,29 @@
 import styled from "styled-components";
 import { AiOutlineInfoCircle, AiOutlineCheck } from "react-icons/ai";
 
+import { useState } from "react";
+import NumberFormat from "react-number-format";
+
 export const Form = () => {
+  const initialValuesForm = {
+    yeld: "",
+    indexType: "",
+    contribuition: "",
+    monthContribuition: "",
+    deadline: "",
+    profitability: "",
+    IPCA: "",
+    CDI: "",
+  };
+
+  const [valuesForm, setValuesForm] = useState({ ...initialValuesForm });
+  const disabled = Object.values(valuesForm).includes("");
+
+  const resetValues = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    setValuesForm(initialValuesForm);
+  };
+
   return (
     <Container>
       <form>
@@ -44,36 +66,92 @@ export const Form = () => {
         <Flex>
           <ContentInput>
             <label>Aporte Inicial</label>
-            <input />
+            <NumberFormat
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setValuesForm({ ...valuesForm, contribuition: e.target.value });
+              }}
+              value={valuesForm.contribuition}
+              thousandSeparator={"."}
+              decimalSeparator={","}
+              decimalScale={2}
+              prefix={"R$ "}
+            />
           </ContentInput>
           <ContentInput>
             <label>Aporte Mensal</label>
-            <input />
+            <NumberFormat
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setValuesForm({
+                  ...valuesForm,
+                  monthContribuition: e.target.value,
+                });
+              }}
+              value={valuesForm.monthContribuition}
+              thousandSeparator={"."}
+              decimalSeparator={","}
+              decimalScale={2}
+              prefix={"R$ "}
+            />{" "}
           </ContentInput>
         </Flex>
         <Flex>
           <ContentInput>
             <label>Prazo (em meses)</label>
-            <input />
+            <input
+              type="number"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setValuesForm({ ...valuesForm, deadline: e.target.value });
+              }}
+              value={valuesForm.deadline}
+            />
           </ContentInput>
           <ContentInput>
             <label>Rentabilidade</label>
-            <input />
+            <NumberFormat
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setValuesForm({ ...valuesForm, profitability: e.target.value });
+              }}
+              value={valuesForm.profitability}
+              decimalSeparator={","}
+              suffix={"%"}
+            />
           </ContentInput>
         </Flex>
         <Flex>
           <ContentInput>
             <label>IPCA (ao ano)</label>
-            <input />
+            <NumberFormat
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setValuesForm({ ...valuesForm, IPCA: e.target.value });
+              }}
+              value={valuesForm.IPCA}
+              decimalSeparator={","}
+              suffix={"%"}
+            />{" "}
           </ContentInput>
           <ContentInput>
             <label>CDI (ao ano)</label>
-            <input />
+            <NumberFormat
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setValuesForm({ ...valuesForm, CDI: e.target.value });
+              }}
+              value={valuesForm.CDI}
+              decimalSeparator={","}
+              suffix={"%"}
+            />{" "}
           </ContentInput>
         </Flex>
         <FlexButton>
-          <button>Limpar campos</button>
-          <button>Simular</button>
+          <button
+            onClick={(e) => {
+              resetValues(e);
+            }}
+          >
+            Limpar campos
+          </button>
+          <button disabled={disabled} type="submit">
+            Simular
+          </button>
         </FlexButton>
       </form>
     </Container>
@@ -82,7 +160,7 @@ export const Form = () => {
 
 export const Container = styled.div`
   margin-top: 50px;
-  width: 45%;
+  width: 40%;
 
   form {
     width: 100%;
@@ -116,6 +194,7 @@ export const ContentInput = styled.div`
     border-bottom: solid 1px black;
     padding: 15px 0px;
     margin-top: 10px;
+    font-size: 1.2rem;
   }
 `;
 
@@ -131,6 +210,10 @@ export const FlexButtonYeld = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &:hover {
+      cursor: pointer;
+    }
 
     &:first-child {
       border-radius: 15px 0px 0px 15px;
@@ -157,6 +240,10 @@ export const FlexButtonIndex = styled.div`
     align-items: center;
     justify-content: center;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     &:first-child {
       border-radius: 15px 0px 0px 15px;
     }
@@ -182,11 +269,25 @@ export const FlexButton = styled.div`
     width: 100%;
     border-radius: 15px;
     font-size: 1.3rem;
+
+    &:hover {
+      cursor: pointer;
+    }
+
     &:first-child {
       margin-right: 10px;
     }
     &:nth-child(2) {
       margin-left: 10px;
+      border: solid 1px #ed8e53;
+      background: #ed8e53;
+      transition: 0.5s;
+
+      &:disabled {
+        background: #969696;
+        color: black;
+        border: solid 1px black;
+      }
     }
   }
 `;
