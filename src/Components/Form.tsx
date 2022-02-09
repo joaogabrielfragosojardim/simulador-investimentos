@@ -1,27 +1,44 @@
 import styled from "styled-components";
 import { AiOutlineInfoCircle, AiOutlineCheck } from "react-icons/ai";
 
-import { useState } from "react";
-import NumberFormat from "react-number-format";
+import { MoneyInput } from "../Components/MoneyInput";
+import { PercentageInput } from "../Components/PercentageInput";
 
-export const Form = () => {
-  const initialValuesForm = {
-    yeld: "",
-    indexType: "",
-    contribuition: "",
-    monthContribuition: "",
-    deadline: "",
-    profitability: "",
-    IPCA: "",
-    CDI: "",
-  };
+interface ISelectedButton {
+  selected: string;
+}
 
-  const [valuesForm, setValuesForm] = useState({ ...initialValuesForm });
+interface IValuesForm {
+  yeld: string;
+  indexType: string;
+  contribuition: string;
+  monthContribuition: string;
+  deadline: string;
+  profitability: string;
+  IPCA: string;
+  CDI: string;
+}
+
+interface IProps {
+  initialValuesForm: IValuesForm;
+  valuesForm: IValuesForm;
+  setValuesForm: React.Dispatch<React.SetStateAction<IValuesForm>>;
+}
+
+export const Form = ({
+  initialValuesForm,
+  valuesForm,
+  setValuesForm,
+}: IProps) => {
   const disabled = Object.values(valuesForm).includes("");
 
-  const resetValues = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    setValuesForm(initialValuesForm);
+  const resetValues = (c: React.MouseEvent<HTMLElement>) => {
+    c.preventDefault();
+    setValuesForm({
+      ...initialValuesForm,
+      IPCA: valuesForm.IPCA,
+      CDI: valuesForm.CDI,
+    });
   };
 
   return (
@@ -38,61 +55,69 @@ export const Form = () => {
           </Content>
         </Flex>
         <Flex>
-          <FlexButtonYeld>
-            <button>
+          <FlexButtonYeld selected={valuesForm.yeld}>
+            <button
+              onClick={(c: React.MouseEvent<HTMLElement>) => {
+                c.preventDefault();
+                setValuesForm({ ...valuesForm, yeld: "BRUTO" });
+              }}
+            >
               <AiOutlineCheck />
               Bruto
             </button>
-            <button>
+            <button
+              onClick={(c: React.MouseEvent<HTMLElement>) => {
+                c.preventDefault();
+                setValuesForm({ ...valuesForm, yeld: "LIQUIDO" });
+              }}
+            >
               <AiOutlineCheck />
               Líquido
             </button>
           </FlexButtonYeld>
-          <FlexButtonIndex>
-            <button>
+          <FlexButtonIndex selected={valuesForm.indexType}>
+            <button
+              onClick={(c: React.MouseEvent<HTMLElement>) => {
+                c.preventDefault();
+                setValuesForm({ ...valuesForm, indexType: "PRE" });
+              }}
+            >
               <AiOutlineCheck />
               PRÉ
             </button>
-            <button>
+            <button
+              onClick={(c: React.MouseEvent<HTMLElement>) => {
+                c.preventDefault();
+                setValuesForm({ ...valuesForm, indexType: "POS" });
+              }}
+            >
               <AiOutlineCheck />
               POS
             </button>
-            <button>
+            <button
+              onClick={(c: React.MouseEvent<HTMLElement>) => {
+                c.preventDefault();
+                setValuesForm({ ...valuesForm, indexType: "FIXADO" });
+              }}
+            >
               <AiOutlineCheck />
               FIXADO
             </button>
           </FlexButtonIndex>
         </Flex>
         <Flex>
-          <ContentInput>
-            <label>Aporte Inicial</label>
-            <NumberFormat
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setValuesForm({ ...valuesForm, contribuition: e.target.value });
-              }}
-              value={valuesForm.contribuition}
-              thousandSeparator={"."}
-              decimalSeparator={","}
-              decimalScale={2}
-              prefix={"R$ "}
-            />
-          </ContentInput>
-          <ContentInput>
-            <label>Aporte Mensal</label>
-            <NumberFormat
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setValuesForm({
-                  ...valuesForm,
-                  monthContribuition: e.target.value,
-                });
-              }}
-              value={valuesForm.monthContribuition}
-              thousandSeparator={"."}
-              decimalSeparator={","}
-              decimalScale={2}
-              prefix={"R$ "}
-            />{" "}
-          </ContentInput>
+          <MoneyInput
+            label={"Aporte Inicial"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            change={"contribuition"}
+          />
+          <MoneyInput
+            label={"Aporte Mensal"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            change={"mounthContribuition"}
+          />
         </Flex>
         <Flex>
           <ContentInput>
@@ -105,41 +130,26 @@ export const Form = () => {
               value={valuesForm.deadline}
             />
           </ContentInput>
-          <ContentInput>
-            <label>Rentabilidade</label>
-            <NumberFormat
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setValuesForm({ ...valuesForm, profitability: e.target.value });
-              }}
-              value={valuesForm.profitability}
-              decimalSeparator={","}
-              suffix={"%"}
-            />
-          </ContentInput>
+          <PercentageInput
+            label={"Rentabilidade"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            change={"profitability"}
+          />
         </Flex>
         <Flex>
-          <ContentInput>
-            <label>IPCA (ao ano)</label>
-            <NumberFormat
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setValuesForm({ ...valuesForm, IPCA: e.target.value });
-              }}
-              value={valuesForm.IPCA}
-              decimalSeparator={","}
-              suffix={"%"}
-            />{" "}
-          </ContentInput>
-          <ContentInput>
-            <label>CDI (ao ano)</label>
-            <NumberFormat
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setValuesForm({ ...valuesForm, CDI: e.target.value });
-              }}
-              value={valuesForm.CDI}
-              decimalSeparator={","}
-              suffix={"%"}
-            />{" "}
-          </ContentInput>
+          <PercentageInput
+            label={"IPCA (ao ano)"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            change={"IPCA"}
+          />
+          <PercentageInput
+            label={"CDI (ao ano)"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            change={"CDI"}
+          />
         </Flex>
         <FlexButton>
           <button
@@ -195,10 +205,14 @@ export const ContentInput = styled.div`
     padding: 15px 0px;
     margin-top: 10px;
     font-size: 1.2rem;
+
+    &:disabled {
+      color: black;
+    }
   }
 `;
 
-export const FlexButtonYeld = styled.div`
+export const FlexButtonYeld = styled.div<ISelectedButton>`
   display: flex;
   width: 40%;
 
@@ -217,18 +231,31 @@ export const FlexButtonYeld = styled.div`
 
     &:first-child {
       border-radius: 15px 0px 0px 15px;
+      background: ${(props) =>
+        props.selected === "BRUTO" ? "#ed8e53" : "efefef"};
+      color: ${(props) => (props.selected === "BRUTO" ? "white" : "black")};
+
+      svg {
+        font-size: 0.8rem;
+        display: ${(props) => (props.selected === "BRUTO" ? "inline" : "none")};
+      }
     }
     &:nth-child(2) {
       border-radius: 0px 15px 15px 0px;
-    }
+      background: ${(props) =>
+        props.selected === "LIQUIDO" ? "#ed8e53" : "efefef"};
+      color: ${(props) => (props.selected === "LIQUIDO" ? "white" : "black")};
 
-    svg {
-      font-size: 0.8rem;
+      svg {
+        font-size: 0.8rem;
+        display: ${(props) =>
+          props.selected === "LIQUIDO" ? "inline" : "none"};
+      }
     }
   }
 `;
 
-export const FlexButtonIndex = styled.div`
+export const FlexButtonIndex = styled.div<ISelectedButton>`
   display: flex;
   width: 40%;
 
@@ -246,13 +273,41 @@ export const FlexButtonIndex = styled.div`
 
     &:first-child {
       border-radius: 15px 0px 0px 15px;
+      background: ${(props) =>
+        props.selected === "PRE" ? "#ed8e53" : "efefef"};
+      color: ${(props) => (props.selected === "PRE" ? "white" : "black")};
+
+      svg {
+        font-size: 0.8rem;
+        display: ${(props) => (props.selected === "PRE" ? "inline" : "none")};
+      }
+    }
+    &:nth-child(2) {
+      background: ${(props) =>
+        props.selected === "POS" ? "#ed8e53" : "efefef"};
+      color: ${(props) => (props.selected === "POS" ? "white" : "black")};
+
+      svg {
+        font-size: 0.8rem;
+        display: ${(props) => (props.selected === "POS" ? "inline" : "none")};
+      }
     }
     &:nth-child(3) {
       border-radius: 0px 15px 15px 0px;
+      background: ${(props) =>
+        props.selected === "FIXADO" ? "#ed8e53" : "efefef"};
+      color: ${(props) => (props.selected === "FIXADO" ? "white" : "black")};
+
+      svg {
+        font-size: 0.8rem;
+        display: ${(props) =>
+          props.selected === "FIXADO" ? "inline" : "none"};
+      }
     }
 
     svg {
       font-size: 0.8rem;
+      display: none;
     }
   }
 `;
