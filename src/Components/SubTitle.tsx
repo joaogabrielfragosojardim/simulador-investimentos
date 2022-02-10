@@ -1,9 +1,13 @@
 import styled from "styled-components";
 
-export const SubTitle = () => {
+interface IProps {
+  subtitle: string;
+}
+
+export const SubTitle = ({ subtitle }: IProps) => {
   return (
     <>
-      <SubtitlePage>Simulador</SubtitlePage>
+      <SubtitlePage>{subtitle}</SubtitlePage>
     </>
   );
 };

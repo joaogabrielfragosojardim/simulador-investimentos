@@ -20,32 +20,58 @@ export const MoneyInput = ({
         setValuesForm({ ...valuesForm, contribuition: e.target.value });
         break;
       }
-      case "mounthContribuition": {
-        setValuesForm({ ...valuesForm, mounthContribuition: e.target.value });
+      case "monthContribuition": {
+        setValuesForm({ ...valuesForm, monthContribuition: e.target.value });
         break;
       }
     }
   };
 
-  return (
-    <ContentInput>
-      <label>{label}</label>
-      <NumberFormat
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          changeValue(e);
-        }}
-        thousandSeparator={"."}
-        decimalSeparator={","}
-        decimalScale={2}
-        prefix={"R$ "}
-      />
-    </ContentInput>
-  );
+  const input = () => {
+    switch (change) {
+      case "contribuition": {
+        return (
+          <ContentInput>
+            <label>{label}</label>
+            <NumberFormat
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                changeValue(e);
+              }}
+              value={valuesForm.contribuition}
+              thousandSeparator={"."}
+              decimalSeparator={","}
+              decimalScale={2}
+              prefix={"R$ "}
+            />
+          </ContentInput>
+        );
+      }
+      case "monthContribuition": {
+        return (
+          <ContentInput>
+            <label>{label}</label>
+            <NumberFormat
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                changeValue(e);
+              }}
+              value={valuesForm.monthContribuition}
+              thousandSeparator={"."}
+              decimalSeparator={","}
+              decimalScale={2}
+              prefix={"R$ "}
+            />
+          </ContentInput>
+        );
+      }
+    }
+  };
+
+  return <>{input()}</>;
 };
 
 export const ContentInput = styled.div`
   width: 40%;
-  margin: 30px 0px;
+  margin: 25px 0px;
 
   input {
     width: 100%;
@@ -53,7 +79,7 @@ export const ContentInput = styled.div`
     border-bottom: solid 1px black;
     padding: 15px 0px;
     margin-top: 10px;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
 
     &:disabled {
       color: black;

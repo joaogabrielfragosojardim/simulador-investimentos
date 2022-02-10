@@ -1,8 +1,14 @@
 import styled from "styled-components";
 import { AiOutlineInfoCircle, AiOutlineCheck } from "react-icons/ai";
 
-import { MoneyInput } from "../Components/MoneyInput";
-import { PercentageInput } from "../Components/PercentageInput";
+import { MoneyInput } from "../components/MoneyInput";
+import { PercentageInput } from "../components/PercentageInput";
+import { theme } from "../styles/theme";
+
+import { indexType } from "../constants/indexType";
+import { yeldType } from "../constants/yeldType";
+import { api } from "../services/api";
+import { IDataDashboard } from "../pages/Home";
 
 interface ISelectedButton {
   selected: string;
@@ -23,12 +29,14 @@ interface IProps {
   initialValuesForm: IValuesForm;
   valuesForm: IValuesForm;
   setValuesForm: React.Dispatch<React.SetStateAction<IValuesForm>>;
+  setDataDashboard: React.Dispatch<React.SetStateAction<IDataDashboard>>;
 }
 
 export const Form = ({
   initialValuesForm,
   valuesForm,
   setValuesForm,
+  setDataDashboard,
 }: IProps) => {
   const disabled = Object.values(valuesForm).includes("");
 
@@ -41,137 +49,156 @@ export const Form = ({
     });
   };
 
-  return (
-    <Container>
-      <form>
-        <Flex>
-          <Content>
-            <label>Rendimento</label>
-            <AiOutlineInfoCircle />
-          </Content>
-          <Content>
-            <label>Tipos de indexação</label>
-            <AiOutlineInfoCircle />
-          </Content>
-        </Flex>
-        <Flex>
-          <FlexButtonYeld selected={valuesForm.yeld}>
-            <button
-              onClick={(c: React.MouseEvent<HTMLElement>) => {
-                c.preventDefault();
-                setValuesForm({ ...valuesForm, yeld: "BRUTO" });
-              }}
-            >
-              <AiOutlineCheck />
-              Bruto
-            </button>
-            <button
-              onClick={(c: React.MouseEvent<HTMLElement>) => {
-                c.preventDefault();
-                setValuesForm({ ...valuesForm, yeld: "LIQUIDO" });
-              }}
-            >
-              <AiOutlineCheck />
-              Líquido
-            </button>
-          </FlexButtonYeld>
-          <FlexButtonIndex selected={valuesForm.indexType}>
-            <button
-              onClick={(c: React.MouseEvent<HTMLElement>) => {
-                c.preventDefault();
-                setValuesForm({ ...valuesForm, indexType: "PRE" });
-              }}
-            >
-              <AiOutlineCheck />
-              PRÉ
-            </button>
-            <button
-              onClick={(c: React.MouseEvent<HTMLElement>) => {
-                c.preventDefault();
-                setValuesForm({ ...valuesForm, indexType: "POS" });
-              }}
-            >
-              <AiOutlineCheck />
-              POS
-            </button>
-            <button
-              onClick={(c: React.MouseEvent<HTMLElement>) => {
-                c.preventDefault();
-                setValuesForm({ ...valuesForm, indexType: "FIXADO" });
-              }}
-            >
-              <AiOutlineCheck />
-              FIXADO
-            </button>
-          </FlexButtonIndex>
-        </Flex>
-        <Flex>
-          <MoneyInput
-            label={"Aporte Inicial"}
-            valuesForm={valuesForm}
-            setValuesForm={setValuesForm}
-            change={"contribuition"}
-          />
-          <MoneyInput
-            label={"Aporte Mensal"}
-            valuesForm={valuesForm}
-            setValuesForm={setValuesForm}
-            change={"mounthContribuition"}
-          />
-        </Flex>
-        <Flex>
-          <ContentInput>
-            <label>Prazo (em meses)</label>
-            <input
-              type="number"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setValuesForm({ ...valuesForm, deadline: e.target.value });
-              }}
-              value={valuesForm.deadline}
+  const getData = (c: React.MouseEvent<HTMLElement>) => {
+    c.preventDefault();
+    api
+      .get(
+        `/simulacoes?tipoIndexacao=${valuesForm.indexType}&tipoRendimento=${valuesForm.yeld}`
+      )
+      .then((resp) => {
+        setDataDashboard(resp.data[0]);
+      });
+  };
+
+  if (valuesForm.IPCA !== "" && valuesForm.CDI !== "") {
+    return (
+      <Container>
+        <form>
+          <Flex>
+            <Content>
+              <label>Rendimento</label>
+              <AiOutlineInfoCircle />
+            </Content>
+            <Content>
+              <label>Tipos de indexação</label>
+              <AiOutlineInfoCircle />
+            </Content>
+          </Flex>
+          <Flex>
+            <FlexButtonYeld selected={valuesForm.yeld}>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
+                  setValuesForm({ ...valuesForm, yeld: yeldType.BRUTO });
+                }}
+              >
+                <AiOutlineCheck />
+                Bruto
+              </button>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
+                  setValuesForm({ ...valuesForm, yeld: yeldType.LIQUIDO });
+                }}
+              >
+                <AiOutlineCheck />
+                Líquido
+              </button>
+            </FlexButtonYeld>
+            <FlexButtonIndex selected={valuesForm.indexType}>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
+                  setValuesForm({ ...valuesForm, indexType: indexType.PRE });
+                }}
+              >
+                <AiOutlineCheck />
+                PRÉ
+              </button>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
+                  setValuesForm({ ...valuesForm, indexType: indexType.POS });
+                }}
+              >
+                <AiOutlineCheck />
+                POS
+              </button>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
+                  setValuesForm({ ...valuesForm, indexType: indexType.FIXADO });
+                }}
+              >
+                <AiOutlineCheck />
+                FIXADO
+              </button>
+            </FlexButtonIndex>
+          </Flex>
+          <Flex>
+            <MoneyInput
+              label={"Aporte Inicial"}
+              valuesForm={valuesForm}
+              setValuesForm={setValuesForm}
+              change={"contribuition"}
             />
-          </ContentInput>
-          <PercentageInput
-            label={"Rentabilidade"}
-            valuesForm={valuesForm}
-            setValuesForm={setValuesForm}
-            change={"profitability"}
-          />
-        </Flex>
-        <Flex>
-          <PercentageInput
-            label={"IPCA (ao ano)"}
-            valuesForm={valuesForm}
-            setValuesForm={setValuesForm}
-            change={"IPCA"}
-          />
-          <PercentageInput
-            label={"CDI (ao ano)"}
-            valuesForm={valuesForm}
-            setValuesForm={setValuesForm}
-            change={"CDI"}
-          />
-        </Flex>
-        <FlexButton>
-          <button
-            onClick={(e) => {
-              resetValues(e);
-            }}
-          >
-            Limpar campos
-          </button>
-          <button disabled={disabled} type="submit">
-            Simular
-          </button>
-        </FlexButton>
-      </form>
-    </Container>
-  );
+            <MoneyInput
+              label={"Aporte Mensal"}
+              valuesForm={valuesForm}
+              setValuesForm={setValuesForm}
+              change={"monthContribuition"}
+            />
+          </Flex>
+          <Flex>
+            <ContentInput>
+              <label>Prazo (em meses)</label>
+              <input
+                type="number"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setValuesForm({ ...valuesForm, deadline: e.target.value });
+                }}
+                value={valuesForm.deadline}
+              />
+            </ContentInput>
+            <PercentageInput
+              label={"Rentabilidade"}
+              valuesForm={valuesForm}
+              setValuesForm={setValuesForm}
+              change={"profitability"}
+            />
+          </Flex>
+          <Flex>
+            <PercentageInput
+              label={"IPCA (ao ano)"}
+              valuesForm={valuesForm}
+              setValuesForm={setValuesForm}
+              change={indexType.FIXADO}
+            />
+            <PercentageInput
+              label={"CDI (ao ano)"}
+              valuesForm={valuesForm}
+              setValuesForm={setValuesForm}
+              change={indexType.CDI}
+            />
+          </Flex>
+          <FlexButton>
+            <button
+              onClick={(e) => {
+                resetValues(e);
+              }}
+            >
+              Limpar campos
+            </button>
+            <button
+              disabled={disabled}
+              type="submit"
+              onClick={(c) => {
+                getData(c);
+              }}
+            >
+              Simular
+            </button>
+          </FlexButton>
+        </form>
+      </Container>
+    );
+  }
+
+  return <></>;
 };
 
 export const Container = styled.div`
   margin-top: 50px;
-  width: 40%;
-
   form {
     width: 100%;
   }
@@ -201,13 +228,13 @@ export const ContentInput = styled.div`
   input {
     width: 100%;
     border: none;
-    border-bottom: solid 1px black;
+    border-bottom: solid 1px ${theme.colors.black};
     padding: 15px 0px;
     margin-top: 10px;
     font-size: 1.2rem;
 
     &:disabled {
-      color: black;
+      color: ${theme.colors.black};
     }
   }
 `;
@@ -219,8 +246,8 @@ export const FlexButtonYeld = styled.div<ISelectedButton>`
   button {
     width: 50%;
     font-size: 1rem;
-    padding: 15px 30px;
-    border: solid 1px black;
+    padding: 20px 30px;
+    border: solid 1px ${theme.colors.black};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -232,24 +259,35 @@ export const FlexButtonYeld = styled.div<ISelectedButton>`
     &:first-child {
       border-radius: 15px 0px 0px 15px;
       background: ${(props) =>
-        props.selected === "BRUTO" ? "#ed8e53" : "efefef"};
-      color: ${(props) => (props.selected === "BRUTO" ? "white" : "black")};
+        props.selected === yeldType.BRUTO
+          ? theme.colors.principal
+          : theme.colors.secondary};
+      color: ${(props) =>
+        props.selected === yeldType.BRUTO
+          ? theme.colors.white
+          : theme.colors.black};
 
       svg {
         font-size: 0.8rem;
-        display: ${(props) => (props.selected === "BRUTO" ? "inline" : "none")};
+        display: ${(props) =>
+          props.selected === yeldType.BRUTO ? "inline" : "none"};
       }
     }
     &:nth-child(2) {
       border-radius: 0px 15px 15px 0px;
       background: ${(props) =>
-        props.selected === "LIQUIDO" ? "#ed8e53" : "efefef"};
-      color: ${(props) => (props.selected === "LIQUIDO" ? "white" : "black")};
+        props.selected === yeldType.LIQUIDO
+          ? theme.colors.principal
+          : theme.colors.secondary};
+      color: ${(props) =>
+        props.selected === yeldType.LIQUIDO
+          ? theme.colors.white
+          : theme.colors.black};
 
       svg {
         font-size: 0.8rem;
         display: ${(props) =>
-          props.selected === "LIQUIDO" ? "inline" : "none"};
+          props.selected === yeldType.LIQUIDO ? "inline" : "none"};
       }
     }
   }
@@ -262,7 +300,7 @@ export const FlexButtonIndex = styled.div<ISelectedButton>`
   button {
     width: 33.3%;
     font-size: 1rem;
-    border: solid 1px black;
+    border: solid 1px ${theme.colors.black};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -274,34 +312,51 @@ export const FlexButtonIndex = styled.div<ISelectedButton>`
     &:first-child {
       border-radius: 15px 0px 0px 15px;
       background: ${(props) =>
-        props.selected === "PRE" ? "#ed8e53" : "efefef"};
-      color: ${(props) => (props.selected === "PRE" ? "white" : "black")};
+        props.selected === indexType.PRE
+          ? theme.colors.principal
+          : theme.colors.secondary};
+      color: ${(props) =>
+        props.selected === indexType.PRE
+          ? theme.colors.white
+          : theme.colors.black};
 
       svg {
         font-size: 0.8rem;
-        display: ${(props) => (props.selected === "PRE" ? "inline" : "none")};
+        display: ${(props) =>
+          props.selected === indexType.PRE ? "inline" : "none"};
       }
     }
     &:nth-child(2) {
       background: ${(props) =>
-        props.selected === "POS" ? "#ed8e53" : "efefef"};
-      color: ${(props) => (props.selected === "POS" ? "white" : "black")};
+        props.selected === indexType.POS
+          ? theme.colors.principal
+          : theme.colors.secondary};
+      color: ${(props) =>
+        props.selected === indexType.POS
+          ? theme.colors.white
+          : theme.colors.black};
 
       svg {
         font-size: 0.8rem;
-        display: ${(props) => (props.selected === "POS" ? "inline" : "none")};
+        display: ${(props) =>
+          props.selected === indexType.POS ? "inline" : "none"};
       }
     }
     &:nth-child(3) {
       border-radius: 0px 15px 15px 0px;
       background: ${(props) =>
-        props.selected === "FIXADO" ? "#ed8e53" : "efefef"};
-      color: ${(props) => (props.selected === "FIXADO" ? "white" : "black")};
+        props.selected === indexType.FIXADO
+          ? theme.colors.principal
+          : theme.colors.secondary};
+      color: ${(props) =>
+        props.selected === indexType.FIXADO
+          ? theme.colors.white
+          : theme.colors.black};
 
       svg {
         font-size: 0.8rem;
         display: ${(props) =>
-          props.selected === "FIXADO" ? "inline" : "none"};
+          props.selected === indexType.FIXADO ? "inline" : "none"};
       }
     }
 
@@ -318,9 +373,9 @@ export const FlexButton = styled.div`
   display: flex;
 
   button {
-    border: solid 1px black;
+    border: solid 1px ${theme.colors.black};
     font-weight: bold;
-    padding: 20px;
+    padding: 25px 20px;
     width: 100%;
     border-radius: 15px;
     font-size: 1.3rem;
@@ -334,14 +389,15 @@ export const FlexButton = styled.div`
     }
     &:nth-child(2) {
       margin-left: 10px;
-      border: solid 1px #ed8e53;
-      background: #ed8e53;
+      border: solid 1px ${theme.colors.principal};
+      background: ${theme.colors.principal};
       transition: 0.5s;
 
       &:disabled {
-        background: #969696;
-        color: black;
-        border: solid 1px black;
+        background: ${theme.colors.disabled};
+        color: ${theme.colors.black};
+        border: solid 1px ${theme.colors.black};
+        cursor: default;
       }
     }
   }

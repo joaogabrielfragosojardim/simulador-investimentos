@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import NumberFormat from "react-number-format";
 
+import { indexType } from "../constants/indexType";
+
 interface iProps {
   valuesForm: any;
   setValuesForm: any;
@@ -16,11 +18,11 @@ export const PercentageInput = ({
 }: iProps) => {
   const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (change) {
-      case "IPCA": {
+      case indexType.FIXADO: {
         setValuesForm({ ...valuesForm, IPCA: e.target.value });
         break;
       }
-      case "CDI": {
+      case indexType.CDI: {
         setValuesForm({ ...valuesForm, CDI: e.target.value });
         break;
       }
@@ -33,7 +35,7 @@ export const PercentageInput = ({
 
   const input = () => {
     switch (change) {
-      case "IPCA": {
+      case indexType.FIXADO: {
         return (
           <ContentInput>
             <label>{label}</label>
@@ -44,11 +46,12 @@ export const PercentageInput = ({
               value={valuesForm.IPCA}
               decimalSeparator={","}
               suffix={"%"}
+              disabled
             />
           </ContentInput>
         );
       }
-      case "CDI": {
+      case indexType.CDI: {
         return (
           <ContentInput>
             <label>{label}</label>
@@ -59,6 +62,7 @@ export const PercentageInput = ({
               value={valuesForm.CDI}
               decimalSeparator={","}
               suffix={"%"}
+              disabled
             />
           </ContentInput>
         );
@@ -71,6 +75,7 @@ export const PercentageInput = ({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 changeValue(e);
               }}
+              value={valuesForm.profitability}
               decimalSeparator={","}
               suffix={"%"}
             />
@@ -85,7 +90,7 @@ export const PercentageInput = ({
 
 export const ContentInput = styled.div`
   width: 40%;
-  margin: 30px 0px;
+  margin: 25px 0px;
 
   input {
     width: 100%;
@@ -93,7 +98,7 @@ export const ContentInput = styled.div`
     border-bottom: solid 1px black;
     padding: 15px 0px;
     margin-top: 10px;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
 
     &:disabled {
       color: black;
