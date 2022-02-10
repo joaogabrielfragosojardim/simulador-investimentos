@@ -34,6 +34,13 @@ export const Home = () => {
   };
 
   const [valuesForm, setValuesForm] = useState({ ...initialValuesForm });
+  const [errorsForm, setErrorsForm] = useState({
+    contribuition: false,
+    monthContribuition: false,
+    deadline: false,
+    profitability: false,
+  });
+
   const [dataDashboard, setDataDashboard] = useState<IDataDashboard>({});
 
   useEffect(() => {
@@ -57,6 +64,8 @@ export const Home = () => {
             valuesForm={valuesForm}
             setValuesForm={setValuesForm}
             setDataDashboard={setDataDashboard}
+            errorsForm={errorsForm}
+            setErrorsForm={setErrorsForm}
           />
         </div>
         <ContainerDashboard>

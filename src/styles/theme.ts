@@ -5,6 +5,7 @@ export const theme = {
     disabled: "#969696",
     white: "#ffffff",
     black: "#000000",
-    green: "#40c93e"
+    green: "#40c93e",
+    red: "#ff0000",
   },
 };

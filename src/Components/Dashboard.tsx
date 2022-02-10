@@ -12,6 +12,10 @@ interface iCards {
   green?: boolean;
 }
 
+interface iContribuition {
+  color: string;
+}
+
 export const Dashboard = ({ dataDashboard }: iProps) => {
   const toRealMoney = (money: number | undefined) => {
     return money?.toLocaleString("pt-br", {
@@ -33,8 +37,6 @@ export const Dashboard = ({ dataDashboard }: iProps) => {
     contribuition: value,
     withoutContribuiton: valuesWithoutContribuition[index],
   }));
-
-  console.log("data =>", data);
 
   return (
     <>
@@ -64,29 +66,37 @@ export const Dashboard = ({ dataDashboard }: iProps) => {
           <h4>{toRealMoney(dataDashboard.ganhoLiquido)}</h4>
         </Cards>
       </ContainerCards>
-      <BarChart
-        width={900}
-        height={400}
-        data={data}
-        margin={{
-          top: 20,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <XAxis dataKey="month" />
-        <Bar
-          dataKey="withoutContribuiton"
-          stackId="money"
-          fill={theme.colors.black}
-        />
-        <Bar
-          dataKey="contribuition"
-          stackId="money"
-          fill={theme.colors.principal}
-        />
-      </BarChart>
+      <ContainerChart>
+        <h3>Projeção de Valores</h3>
+        <BarChart width={900} height={400} data={data}>
+          <XAxis dataKey="month" />
+          <Bar
+            dataKey="withoutContribuiton"
+            stackId="money"
+            fill={theme.colors.black}
+            stroke={theme.colors.secondary}
+            strokeWidth={3}
+          />
+          <Bar
+            stroke={theme.colors.secondary}
+            strokeWidth={3}
+            dataKey="contribuition"
+            stackId="money"
+            fill={theme.colors.principal}
+          />
+        </BarChart>
+        <h5>Tempo (meses)</h5>
+        <ContainerInfos>
+          <div>
+            <Circles color={theme.colors.principal} />
+            <h4>Com aporte</h4>
+          </div>
+          <div>
+            <Circles color={theme.colors.black} />
+            <h4>Sem aporte</h4>
+          </div>
+        </ContainerInfos>
+      </ContainerChart>
     </>
   );
 };
@@ -101,7 +111,7 @@ export const ContainerCards = styled.div`
 export const Cards = styled.div<iCards>`
   text-align: center;
   padding: 5px 25px;
-  box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.2);
 
   h4 {
     margin-top: 30px;
@@ -109,4 +119,29 @@ export const Cards = styled.div<iCards>`
     color: ${(props) => (props.green ? "green" : theme.colors.black)};
     font-size: 1.2rem;
   }
+`;
+
+export const ContainerChart = styled.div`
+  margin-top: 20px;
+  h5 {
+    text-align: center;
+  }
+`;
+
+export const ContainerInfos = styled.div`
+  display: flex;
+  justify-content: center;
+
+  div {
+    margin: 10px;
+    display: flex;
+    align-items: center;
+  }
+`;
+
+export const Circles = styled.div<iContribuition>`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: ${(props) => props.color};
 `;

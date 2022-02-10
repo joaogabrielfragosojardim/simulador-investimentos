@@ -25,11 +25,24 @@ interface IValuesForm {
   CDI: string;
 }
 
+export interface IErrorsForm {
+  contribuition: boolean;
+  monthContribuition: boolean;
+  deadline: boolean;
+  profitability: boolean;
+}
+
+interface IInput {
+  errors: boolean;
+}
+
 interface IProps {
   initialValuesForm: IValuesForm;
   valuesForm: IValuesForm;
   setValuesForm: React.Dispatch<React.SetStateAction<IValuesForm>>;
   setDataDashboard: React.Dispatch<React.SetStateAction<IDataDashboard>>;
+  errorsForm: IErrorsForm;
+  setErrorsForm: React.Dispatch<React.SetStateAction<IErrorsForm>>;
 }
 
 export const Form = ({
@@ -37,8 +50,12 @@ export const Form = ({
   valuesForm,
   setValuesForm,
   setDataDashboard,
+  errorsForm,
+  setErrorsForm,
 }: IProps) => {
-  const disabled = Object.values(valuesForm).includes("");
+  const disabled =
+    Object.values(valuesForm).includes("") ||
+    Object.values(errorsForm).includes(true);
 
   const resetValues = (c: React.MouseEvent<HTMLElement>) => {
     c.preventDefault();
@@ -130,30 +147,41 @@ export const Form = ({
               label={"Aporte Inicial"}
               valuesForm={valuesForm}
               setValuesForm={setValuesForm}
+              errorsForm={errorsForm}
+              setErrorsForm={setErrorsForm}
               change={"contribuition"}
             />
             <MoneyInput
               label={"Aporte Mensal"}
               valuesForm={valuesForm}
               setValuesForm={setValuesForm}
+              errorsForm={errorsForm}
+              setErrorsForm={setErrorsForm}
               change={"monthContribuition"}
             />
           </Flex>
           <Flex>
-            <ContentInput>
+            <ContentInput errors={errorsForm.deadline}>
               <label>Prazo (em meses)</label>
               <input
                 type="number"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  console.log(e.target.value);
+                  parseInt(e.target.value) <= 0 || parseInt(e.target.value) > 24
+                    ? setErrorsForm({ ...errorsForm, deadline: true })
+                    : setErrorsForm({ ...errorsForm, deadline: false });
                   setValuesForm({ ...valuesForm, deadline: e.target.value });
                 }}
                 value={valuesForm.deadline}
               />
+              <h3>Valor invalido</h3>
             </ContentInput>
             <PercentageInput
               label={"Rentabilidade"}
               valuesForm={valuesForm}
               setValuesForm={setValuesForm}
+              errorsForm={errorsForm}
+              setErrorsForm={setErrorsForm}
               change={"profitability"}
             />
           </Flex>
@@ -221,21 +249,31 @@ export const Content = styled.div`
   }
 `;
 
-export const ContentInput = styled.div`
+export const ContentInput = styled.div<IInput>`
   width: 40%;
-  margin: 30px 0px;
+  margin: 15px 0px;
+  color: ${(props) => (!props.errors ? theme.colors.black : theme.colors.red)};
 
   input {
     width: 100%;
     border: none;
-    border-bottom: solid 1px ${theme.colors.black};
+    border-bottom: solid 1px
+      ${(props) => (!props.errors ? theme.colors.black : theme.colors.red)};
+    color: ${(props) =>
+      !props.errors ? theme.colors.black : theme.colors.red};
     padding: 15px 0px;
     margin-top: 10px;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
 
     &:disabled {
       color: ${theme.colors.black};
     }
+  }
+
+  h3 {
+    margin-top: 15px;
+    visibility: ${(props) => (!props.errors ? "hidden" : "visible")};
+    font-weight: 300;
   }
 `;
 
