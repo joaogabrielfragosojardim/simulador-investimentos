@@ -56,7 +56,10 @@ export const Form = ({
 }: IProps) => {
   const disabled =
     Object.values(valuesForm).includes("") ||
+    Object.values(valuesForm).includes("NaN") ||
     Object.values(errorsForm).includes(true);
+
+  console.log(valuesForm);
 
   const resetValues = (c: React.MouseEvent<HTMLElement>) => {
     c.preventDefault();
@@ -247,7 +250,7 @@ export const Flex = styled.div`
 
   @media (max-width: 700px) {
     flex-direction: column;
-    margin: 0;
+    margin-top: 10px;
   }
 `;
 

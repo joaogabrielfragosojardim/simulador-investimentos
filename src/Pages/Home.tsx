@@ -97,7 +97,7 @@ export const ContainerDashboard = styled.div`
   margin-left: 30px;
 
   @media (max-width: 1600px) {
-    margin-left: none;
+    margin-left: 0;
     margin-top: 50px;
   }
 `;
