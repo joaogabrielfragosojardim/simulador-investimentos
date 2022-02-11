@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { AiOutlineInfoCircle, AiOutlineCheck } from "react-icons/ai";
+import NumberFormat from "react-number-format";
 
 import { MoneyInput } from "../components/MoneyInput";
 import { PercentageInput } from "../components/PercentageInput";
@@ -66,7 +67,7 @@ export const Form = ({
     });
   };
 
-  const getData = (c: React.MouseEvent<HTMLElement>) => {
+  const getData = (c: React.FormEvent<HTMLElement>) => {
     c.preventDefault();
     api
       .get(
@@ -80,68 +81,78 @@ export const Form = ({
   if (valuesForm.IPCA !== "" && valuesForm.CDI !== "") {
     return (
       <Container>
-        <form>
+        <form
+          onSubmit={(c) => {
+            getData(c);
+          }}
+        >
           <Flex>
-            <Content>
-              <label>Rendimento</label>
-              <AiOutlineInfoCircle />
-            </Content>
-            <Content>
-              <label>Tipos de indexação</label>
-              <AiOutlineInfoCircle />
-            </Content>
+            <ContainerButtons>
+              <Content>
+                <label>Rendimento</label>
+                <AiOutlineInfoCircle />
+              </Content>
+              <FlexButtonYeld selected={valuesForm.yeld}>
+                <button
+                  onClick={(c: React.MouseEvent<HTMLElement>) => {
+                    c.preventDefault();
+                    setValuesForm({ ...valuesForm, yeld: yeldType.BRUTO });
+                  }}
+                >
+                  <AiOutlineCheck />
+                  Bruto
+                </button>
+                <button
+                  onClick={(c: React.MouseEvent<HTMLElement>) => {
+                    c.preventDefault();
+                    setValuesForm({ ...valuesForm, yeld: yeldType.LIQUIDO });
+                  }}
+                >
+                  <AiOutlineCheck />
+                  Líquido
+                </button>
+              </FlexButtonYeld>
+            </ContainerButtons>
+            <ContainerButtons>
+              <Content>
+                <label>Tipos de indexação</label>
+                <AiOutlineInfoCircle />
+              </Content>
+              <FlexButtonIndex selected={valuesForm.indexType}>
+                <button
+                  onClick={(c: React.MouseEvent<HTMLElement>) => {
+                    c.preventDefault();
+                    setValuesForm({ ...valuesForm, indexType: indexType.PRE });
+                  }}
+                >
+                  <AiOutlineCheck />
+                  PRÉ
+                </button>
+                <button
+                  onClick={(c: React.MouseEvent<HTMLElement>) => {
+                    c.preventDefault();
+                    setValuesForm({ ...valuesForm, indexType: indexType.POS });
+                  }}
+                >
+                  <AiOutlineCheck />
+                  POS
+                </button>
+                <button
+                  onClick={(c: React.MouseEvent<HTMLElement>) => {
+                    c.preventDefault();
+                    setValuesForm({
+                      ...valuesForm,
+                      indexType: indexType.FIXADO,
+                    });
+                  }}
+                >
+                  <AiOutlineCheck />
+                  FIXADO
+                </button>
+              </FlexButtonIndex>
+            </ContainerButtons>
           </Flex>
-          <Flex>
-            <FlexButtonYeld selected={valuesForm.yeld}>
-              <button
-                onClick={(c: React.MouseEvent<HTMLElement>) => {
-                  c.preventDefault();
-                  setValuesForm({ ...valuesForm, yeld: yeldType.BRUTO });
-                }}
-              >
-                <AiOutlineCheck />
-                Bruto
-              </button>
-              <button
-                onClick={(c: React.MouseEvent<HTMLElement>) => {
-                  c.preventDefault();
-                  setValuesForm({ ...valuesForm, yeld: yeldType.LIQUIDO });
-                }}
-              >
-                <AiOutlineCheck />
-                Líquido
-              </button>
-            </FlexButtonYeld>
-            <FlexButtonIndex selected={valuesForm.indexType}>
-              <button
-                onClick={(c: React.MouseEvent<HTMLElement>) => {
-                  c.preventDefault();
-                  setValuesForm({ ...valuesForm, indexType: indexType.PRE });
-                }}
-              >
-                <AiOutlineCheck />
-                PRÉ
-              </button>
-              <button
-                onClick={(c: React.MouseEvent<HTMLElement>) => {
-                  c.preventDefault();
-                  setValuesForm({ ...valuesForm, indexType: indexType.POS });
-                }}
-              >
-                <AiOutlineCheck />
-                POS
-              </button>
-              <button
-                onClick={(c: React.MouseEvent<HTMLElement>) => {
-                  c.preventDefault();
-                  setValuesForm({ ...valuesForm, indexType: indexType.FIXADO });
-                }}
-              >
-                <AiOutlineCheck />
-                FIXADO
-              </button>
-            </FlexButtonIndex>
-          </Flex>
+          <Flex></Flex>
           <Flex>
             <MoneyInput
               label={"Aporte Inicial"}
@@ -163,16 +174,18 @@ export const Form = ({
           <Flex>
             <ContentInput errors={errorsForm.deadline}>
               <label>Prazo (em meses)</label>
-              <input
-                type="number"
+              <NumberFormat
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  console.log(e.target.value);
-                  parseInt(e.target.value) <= 0 || parseInt(e.target.value) > 24
+                  parseInt(e.target.value) < 1 || parseInt(e.target.value) > 24
                     ? setErrorsForm({ ...errorsForm, deadline: true })
                     : setErrorsForm({ ...errorsForm, deadline: false });
-                  setValuesForm({ ...valuesForm, deadline: e.target.value });
+                  setValuesForm({
+                    ...valuesForm,
+                    deadline: parseInt(e.target.value).toString(),
+                  });
                 }}
                 value={valuesForm.deadline}
+                decimalScale={0}
               />
               <h3>Valor invalido</h3>
             </ContentInput>
@@ -207,13 +220,7 @@ export const Form = ({
             >
               Limpar campos
             </button>
-            <button
-              disabled={disabled}
-              type="submit"
-              onClick={(c) => {
-                getData(c);
-              }}
-            >
+            <button disabled={disabled} type="submit">
               Simular
             </button>
           </FlexButton>
@@ -236,13 +243,32 @@ export const Flex = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin: 30px 0px;
+  margin: 20px 0px;
+
+  @media (max-width: 700px) {
+    flex-direction: column;
+    margin: 0;
+  }
+`;
+
+export const ContainerButtons = styled.div`
+  width: 40%;
+
+  @media (max-width: 700px) {
+    width: 100%;
+    margin-top: 20px;
+  }
 `;
 
 export const Content = styled.div`
-  width: 40%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 20px;
+
+  @media (max-width: 700px) {
+    width: 100%;
+  }
 
   svg {
     font-size: 1.3rem;
@@ -253,6 +279,10 @@ export const ContentInput = styled.div<IInput>`
   width: 40%;
   margin: 15px 0px;
   color: ${(props) => (!props.errors ? theme.colors.black : theme.colors.red)};
+
+  @media (max-width: 700px) {
+    width: 100%;
+  }
 
   input {
     width: 100%;
@@ -279,7 +309,10 @@ export const ContentInput = styled.div<IInput>`
 
 export const FlexButtonYeld = styled.div<ISelectedButton>`
   display: flex;
-  width: 40%;
+
+  @media (max-width: 700px) {
+    width: 100%;
+  }
 
   button {
     width: 50%;
@@ -309,6 +342,10 @@ export const FlexButtonYeld = styled.div<ISelectedButton>`
         font-size: 0.8rem;
         display: ${(props) =>
           props.selected === yeldType.BRUTO ? "inline" : "none"};
+
+        @media (max-width: 450px) {
+          display: none;
+        }
       }
     }
     &:nth-child(2) {
@@ -326,6 +363,9 @@ export const FlexButtonYeld = styled.div<ISelectedButton>`
         font-size: 0.8rem;
         display: ${(props) =>
           props.selected === yeldType.LIQUIDO ? "inline" : "none"};
+        @media (max-width: 450px) {
+          display: none;
+        }
       }
     }
   }
@@ -333,7 +373,10 @@ export const FlexButtonYeld = styled.div<ISelectedButton>`
 
 export const FlexButtonIndex = styled.div<ISelectedButton>`
   display: flex;
-  width: 40%;
+
+  @media (max-width: 700px) {
+    width: 100%;
+  }
 
   button {
     width: 33.3%;
@@ -342,6 +385,7 @@ export const FlexButtonIndex = styled.div<ISelectedButton>`
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px 5px;
 
     &:hover {
       cursor: pointer;
@@ -362,6 +406,9 @@ export const FlexButtonIndex = styled.div<ISelectedButton>`
         font-size: 0.8rem;
         display: ${(props) =>
           props.selected === indexType.PRE ? "inline" : "none"};
+        @media (max-width: 450px) {
+          display: none;
+        }
       }
     }
     &:nth-child(2) {
@@ -378,6 +425,9 @@ export const FlexButtonIndex = styled.div<ISelectedButton>`
         font-size: 0.8rem;
         display: ${(props) =>
           props.selected === indexType.POS ? "inline" : "none"};
+        @media (max-width: 450px) {
+          display: none;
+        }
       }
     }
     &:nth-child(3) {
@@ -395,12 +445,10 @@ export const FlexButtonIndex = styled.div<ISelectedButton>`
         font-size: 0.8rem;
         display: ${(props) =>
           props.selected === indexType.FIXADO ? "inline" : "none"};
+        @media (max-width: 450px) {
+          display: none;
+        }
       }
-    }
-
-    svg {
-      font-size: 0.8rem;
-      display: none;
     }
   }
 `;
@@ -409,6 +457,10 @@ export const FlexButton = styled.div`
   width: 100%;
 
   display: flex;
+
+  @media (max-width: 700px) {
+    flex-direction: column;
+  }
 
   button {
     border: solid 1px ${theme.colors.black};
@@ -424,12 +476,20 @@ export const FlexButton = styled.div`
 
     &:first-child {
       margin-right: 10px;
+
+      @media (max-width: 700px) {
+        margin: 20px 0px;
+      }
     }
     &:nth-child(2) {
       margin-left: 10px;
       border: solid 1px ${theme.colors.principal};
       background: ${theme.colors.principal};
       transition: 0.5s;
+
+      @media (max-width: 700px) {
+        margin: 0;
+      }
 
       &:disabled {
         background: ${theme.colors.disabled};

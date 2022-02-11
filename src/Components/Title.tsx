@@ -7,4 +7,8 @@ export const Title = () => {
 export const TitlePage = styled.h1`
   text-align: center;
   font-size: 2.8rem;
+
+  @media (max-width: 450px) {
+    font-size: 2rem;
+  }
 `;

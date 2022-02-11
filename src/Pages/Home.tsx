@@ -84,10 +84,20 @@ export const Home = () => {
 export const Container = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: 1600px) {
+    flex-direction: column;
+  }
 `;
 
 export const ContainerDashboard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin-left: 30px;
+
+  @media (max-width: 1600px) {
+    margin-left: none;
+    margin-top: 50px;
+  }
 `;

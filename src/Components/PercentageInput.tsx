@@ -111,6 +111,10 @@ export const ContentInput = styled.div<IContentInput>`
   margin: 25px 0px;
   color: ${(props) => (!props.errors ? theme.colors.black : theme.colors.red)};
 
+  @media (max-width: 700px) {
+    width: 100%;
+  }
+
   input {
     width: 100%;
     border: none;

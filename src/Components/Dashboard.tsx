@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { IDataDashboard } from "../pages/Home";
 import { theme } from "../styles/theme";
 
-import { BarChart, Bar, XAxis } from "recharts";
+import { BarChart, Bar, XAxis, ResponsiveContainer } from "recharts";
 
 interface iProps {
   dataDashboard: IDataDashboard;
@@ -68,23 +68,28 @@ export const Dashboard = ({ dataDashboard }: iProps) => {
       </ContainerCards>
       <ContainerChart>
         <h3>Projeção de Valores</h3>
-        <BarChart width={900} height={400} data={data}>
-          <XAxis dataKey="month" />
-          <Bar
-            dataKey="withoutContribuiton"
-            stackId="money"
-            fill={theme.colors.black}
-            stroke={theme.colors.secondary}
-            strokeWidth={3}
-          />
-          <Bar
-            stroke={theme.colors.secondary}
-            strokeWidth={3}
-            dataKey="contribuition"
-            stackId="money"
-            fill={theme.colors.principal}
-          />
-        </BarChart>
+        <ContentChart>
+          <ResponsiveContainer width={"99%"} height={400}>
+            <BarChart data={data}>
+              <XAxis dataKey="month" />
+              <Bar
+                dataKey="withoutContribuiton"
+                stackId="money"
+                fill={theme.colors.black}
+                stroke={theme.colors.secondary}
+                strokeWidth={3}
+              />
+              +
+              <Bar
+                stroke={theme.colors.secondary}
+                strokeWidth={3}
+                dataKey="contribuition"
+                stackId="money"
+                fill={theme.colors.principal}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </ContentChart>
         <h5>Tempo (meses)</h5>
         <ContainerInfos>
           <div>
@@ -106,12 +111,24 @@ export const ContainerCards = styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
   gap: 50px 80px;
+
+  @media (max-width: 850px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  @media (max-width: 550px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const Cards = styled.div<iCards>`
   text-align: center;
   padding: 5px 25px;
   box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 
   h4 {
     margin-top: 30px;
@@ -123,9 +140,23 @@ export const Cards = styled.div<iCards>`
 
 export const ContainerChart = styled.div`
   margin-top: 20px;
+
   h5 {
     text-align: center;
   }
+
+  @media (max-width: 1600px) {
+    h3 {
+      margin-top: 20px;
+    }
+  }
+`;
+
+export const ContentChart = styled.div`
+  display: flex;
+  justify-content: center;
+
+  font-size: 1rem;
 `;
 
 export const ContainerInfos = styled.div`
@@ -136,6 +167,10 @@ export const ContainerInfos = styled.div`
     margin: 10px;
     display: flex;
     align-items: center;
+
+    svg {
+      width: 100%;
+    }
   }
 `;
 
