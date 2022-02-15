@@ -3,7 +3,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/iuricode/README-template?style=for-the-badge)
 
 
-<img src="exemplo-image.png" alt="exemplo imagem">
+<img src="https://github.com/joaogabrielfragosojardim/simulador-investimentos/blob/master/src/assets/thumbnail.jpeg" alt="thumbnail">
 
 Simulador de investimentos feito para um desafio front-end
 
