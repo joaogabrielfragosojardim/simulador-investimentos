@@ -1,8 +1,10 @@
 # Simulador de investimentos
 
-![GitHub repo size](https://img.shields.io/github/repo-size/iuricode/README-template?style=for-the-badge)
-
-
+<div display="flex">
+<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/joaogabrielfragosojardim/simulador-investimentos">
+<img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/joaogabrielfragosojardim/simulador-investimentos">
+<div/>
+<br/>
 <img src="https://github.com/joaogabrielfragosojardim/simulador-investimentos/blob/master/src/assets/thumbnail.jpeg" alt="thumbnail">
 
 Simulador de investimentos feito para um desafio front-end
@@ -50,3 +52,7 @@ feito isto basta rodar a aplicação
 npm start || yarn start
 ```
 recomenda-se o uso do yarn por existir um yarn.lock no projeto!
+  
+ ## 📄 algumas considerações
+  * Independente das informações que o usuário inserir as informações sempre serão as mesmas no dashboard, esses eram requisitos do desafio
+  * irei criar um novo repositório com uma API em node para que esses resultados sejam dinâmicos
