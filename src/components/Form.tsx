@@ -9,7 +9,7 @@ import { theme } from "../styles/theme";
 import { indexType } from "../constants/indexType";
 import { yeldType } from "../constants/yeldType";
 import { api } from "../services/api";
-import { IDataDashboard } from "../pages/Home";
+import { IDataDashboard } from "../renaming/Home";
 import { useMutation } from "react-query";
 
 interface ISelectedButton {

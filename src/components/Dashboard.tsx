@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { IDataDashboard } from "../pages/Home";
+import { IDataDashboard } from "../renaming/Home";
 import { theme } from "../styles/theme";
 
 import { BarChart, Bar, XAxis, ResponsiveContainer } from "recharts";
