@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import NumberFormat from "react-number-format";
-import { useState } from "react";
 
 import { theme } from "../styles/theme";
 import { IErrorsForm } from "./Form";
@@ -26,8 +25,6 @@ export const MoneyInput = ({
   errorsForm,
   setErrorsForm,
 }: iProps) => {
-  useState(false);
-
   const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (change) {
       case "contribuition": {
@@ -49,7 +46,7 @@ export const MoneyInput = ({
     }
   };
 
-  const input = () => {
+  const Input = () => {
     switch (change) {
       case "contribuition": {
         return (
@@ -92,7 +89,7 @@ export const MoneyInput = ({
     }
   };
 
-  return <>{input()}</>;
+  return <>{Input()}</>;
 };
 
 export const ContentInput = styled.div<IContentInputProps>`

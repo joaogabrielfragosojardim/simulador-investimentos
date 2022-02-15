@@ -51,7 +51,7 @@ export const PercentageInput = ({
     }
   };
 
-  const input = () => {
+  const Input = () => {
     switch (change) {
       case indexType.FIXADO: {
         return (
@@ -103,7 +103,7 @@ export const PercentageInput = ({
     }
   };
 
-  return <>{input()}</>;
+  return <>{Input()}</>;
 };
 
 export const ContentInput = styled.div<IContentInput>`

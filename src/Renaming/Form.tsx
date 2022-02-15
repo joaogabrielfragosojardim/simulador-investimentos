@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { AiOutlineInfoCircle, AiOutlineCheck } from "react-icons/ai";
 import NumberFormat from "react-number-format";
 
-import { MoneyInput } from "../components/MoneyInput";
-import { PercentageInput } from "../components/PercentageInput";
+import { MoneyInput } from "./MoneyInput";
+import { PercentageInput } from "./PercentageInput";
 import { theme } from "../styles/theme";
 
 import { indexType } from "../constants/indexType";

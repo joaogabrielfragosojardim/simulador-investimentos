@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { Dashboard } from "../components/Dashboard";
-import { Error } from "../components/Error";
-import { Form } from "../components/Form";
-import { Loading } from "../components/Loading";
-import { SubTitle } from "../components/SubTitle";
-import { Title } from "../components/Title";
+import { Dashboard } from "../Renaming/Dashboard";
+import { Error } from "../Renaming/Error";
+import { Form } from "../Renaming/Form";
+import { Loading } from "../Renaming/Loading";
+import { SubTitle } from "../Renaming/SubTitle";
+import { Title } from "../Renaming/Title";
 import { getIndicators } from "../services/getIndicators";
 
 export interface IDataDashboard {
