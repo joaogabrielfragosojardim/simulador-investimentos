@@ -8,7 +8,7 @@ import { theme } from "../styles/theme";
 
 import { indexType } from "../constants/indexType";
 import { yeldType } from "../constants/yeldType";
-import { api } from "../services/api";
+import { api } from "../renaming/api";
 import { IDataDashboard } from "../pages/Home";
 import { useMutation } from "react-query";
 

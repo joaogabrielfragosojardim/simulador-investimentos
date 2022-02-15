@@ -7,7 +7,7 @@ import { Form } from "../components/Form";
 import { Loading } from "../components/Loading";
 import { SubTitle } from "../components/SubTitle";
 import { Title } from "../components/Title";
-import { getIndicators } from "../services/getIndicators";
+import { getIndicators } from "../renaming/getIndicators";
 
 export interface IDataDashboard {
   valorFinalBruto?: number;
