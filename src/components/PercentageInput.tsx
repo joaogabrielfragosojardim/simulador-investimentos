@@ -97,6 +97,7 @@ export const PercentageInput = ({
               decimalSeparator={","}
               suffix={"%"}
             />
+            <h3>Valor invalido</h3>
           </ContentInput>
         );
       }
@@ -129,5 +130,11 @@ export const ContentInput = styled.div<IContentInput>`
     &:disabled {
       color: black;
     }
+  }
+
+  h3 {
+    margin-top: 15px;
+    visibility: ${(props) => (!props.errors ? "hidden" : "visible")};
+    font-weight: 300;
   }
 `;
