@@ -14,6 +14,7 @@ Simulador de investimentos feito para um desafio front-end
 * React
 * TypesCript
 * Styled Components
+* Axios
 * React Query
 
 ## 💻 Pré-requisitos
