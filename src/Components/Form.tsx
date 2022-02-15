@@ -10,6 +10,7 @@ import { indexType } from "../constants/indexType";
 import { yeldType } from "../constants/yeldType";
 import { api } from "../services/api";
 import { IDataDashboard } from "../pages/Home";
+import { useMutation } from "react-query";
 
 interface ISelectedButton {
   selected: string;
@@ -46,6 +47,11 @@ interface IProps {
   setErrorsForm: React.Dispatch<React.SetStateAction<IErrorsForm>>;
 }
 
+interface IMutateProps {
+  indexType: string;
+  yeld: string;
+}
+
 export const Form = ({
   initialValuesForm,
   valuesForm,
@@ -59,8 +65,6 @@ export const Form = ({
     Object.values(valuesForm).includes("NaN") ||
     Object.values(errorsForm).includes(true);
 
-  console.log(valuesForm);
-
   const resetValues = (c: React.MouseEvent<HTMLElement>) => {
     c.preventDefault();
     setValuesForm({
@@ -70,169 +74,173 @@ export const Form = ({
     });
   };
 
+  const dashboardValuesMutation = useMutation(
+    ({ indexType, yeld }: IMutateProps) =>
+      api.get(`/simulacoes?tipoIndexacao=${indexType}&tipoRendimento=${yeld}`),
+    {
+      onSuccess: (data) => {
+        const formatedData = data.data[0];
+        setDataDashboard(formatedData);
+      },
+    }
+  );
+
   const getData = (c: React.FormEvent<HTMLElement>) => {
     c.preventDefault();
-    api
-      .get(
-        `/simulacoes?tipoIndexacao=${valuesForm.indexType}&tipoRendimento=${valuesForm.yeld}`
-      )
-      .then((resp) => {
-        setDataDashboard(resp.data[0]);
-      });
+    dashboardValuesMutation.mutate({
+      indexType: valuesForm.indexType,
+      yeld: valuesForm.yeld,
+    });
   };
 
-  if (valuesForm.IPCA !== "" && valuesForm.CDI !== "") {
-    return (
-      <Container>
-        <form
-          onSubmit={(c) => {
-            getData(c);
-          }}
-        >
-          <Flex>
-            <ContainerButtons>
-              <Content>
-                <label>Rendimento</label>
-                <AiOutlineInfoCircle />
-              </Content>
-              <FlexButtonYeld selected={valuesForm.yeld}>
-                <button
-                  onClick={(c: React.MouseEvent<HTMLElement>) => {
-                    c.preventDefault();
-                    setValuesForm({ ...valuesForm, yeld: yeldType.BRUTO });
-                  }}
-                >
-                  <AiOutlineCheck />
-                  Bruto
-                </button>
-                <button
-                  onClick={(c: React.MouseEvent<HTMLElement>) => {
-                    c.preventDefault();
-                    setValuesForm({ ...valuesForm, yeld: yeldType.LIQUIDO });
-                  }}
-                >
-                  <AiOutlineCheck />
-                  Líquido
-                </button>
-              </FlexButtonYeld>
-            </ContainerButtons>
-            <ContainerButtons>
-              <Content>
-                <label>Tipos de indexação</label>
-                <AiOutlineInfoCircle />
-              </Content>
-              <FlexButtonIndex selected={valuesForm.indexType}>
-                <button
-                  onClick={(c: React.MouseEvent<HTMLElement>) => {
-                    c.preventDefault();
-                    setValuesForm({ ...valuesForm, indexType: indexType.PRE });
-                  }}
-                >
-                  <AiOutlineCheck />
-                  PRÉ
-                </button>
-                <button
-                  onClick={(c: React.MouseEvent<HTMLElement>) => {
-                    c.preventDefault();
-                    setValuesForm({ ...valuesForm, indexType: indexType.POS });
-                  }}
-                >
-                  <AiOutlineCheck />
-                  POS
-                </button>
-                <button
-                  onClick={(c: React.MouseEvent<HTMLElement>) => {
-                    c.preventDefault();
-                    setValuesForm({
-                      ...valuesForm,
-                      indexType: indexType.FIXADO,
-                    });
-                  }}
-                >
-                  <AiOutlineCheck />
-                  FIXADO
-                </button>
-              </FlexButtonIndex>
-            </ContainerButtons>
-          </Flex>
-          <Flex></Flex>
-          <Flex>
-            <MoneyInput
-              label={"Aporte Inicial"}
-              valuesForm={valuesForm}
-              setValuesForm={setValuesForm}
-              errorsForm={errorsForm}
-              setErrorsForm={setErrorsForm}
-              change={"contribuition"}
-            />
-            <MoneyInput
-              label={"Aporte Mensal"}
-              valuesForm={valuesForm}
-              setValuesForm={setValuesForm}
-              errorsForm={errorsForm}
-              setErrorsForm={setErrorsForm}
-              change={"monthContribuition"}
-            />
-          </Flex>
-          <Flex>
-            <ContentInput errors={errorsForm.deadline}>
-              <label>Prazo (em meses)</label>
-              <NumberFormat
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  parseInt(e.target.value) < 1 || parseInt(e.target.value) > 24
-                    ? setErrorsForm({ ...errorsForm, deadline: true })
-                    : setErrorsForm({ ...errorsForm, deadline: false });
+  return (
+    <Container>
+      <form
+        onSubmit={(c) => {
+          getData(c);
+        }}
+      >
+        <Flex>
+          <ContainerButtons>
+            <Content>
+              <label>Rendimento</label>
+              <AiOutlineInfoCircle />
+            </Content>
+            <FlexButtonYeld selected={valuesForm.yeld}>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
+                  setValuesForm({ ...valuesForm, yeld: yeldType.BRUTO });
+                }}
+              >
+                <AiOutlineCheck />
+                Bruto
+              </button>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
+                  setValuesForm({ ...valuesForm, yeld: yeldType.LIQUIDO });
+                }}
+              >
+                <AiOutlineCheck />
+                Líquido
+              </button>
+            </FlexButtonYeld>
+          </ContainerButtons>
+          <ContainerButtons>
+            <Content>
+              <label>Tipos de indexação</label>
+              <AiOutlineInfoCircle />
+            </Content>
+            <FlexButtonIndex selected={valuesForm.indexType}>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
+                  setValuesForm({ ...valuesForm, indexType: indexType.PRE });
+                }}
+              >
+                <AiOutlineCheck />
+                PRÉ
+              </button>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
+                  setValuesForm({ ...valuesForm, indexType: indexType.POS });
+                }}
+              >
+                <AiOutlineCheck />
+                POS
+              </button>
+              <button
+                onClick={(c: React.MouseEvent<HTMLElement>) => {
+                  c.preventDefault();
                   setValuesForm({
                     ...valuesForm,
-                    deadline: parseInt(e.target.value).toString(),
+                    indexType: indexType.FIXADO,
                   });
                 }}
-                value={valuesForm.deadline}
-                decimalScale={0}
-              />
-              <h3>Valor invalido</h3>
-            </ContentInput>
-            <PercentageInput
-              label={"Rentabilidade"}
-              valuesForm={valuesForm}
-              setValuesForm={setValuesForm}
-              errorsForm={errorsForm}
-              setErrorsForm={setErrorsForm}
-              change={"profitability"}
-            />
-          </Flex>
-          <Flex>
-            <PercentageInput
-              label={"IPCA (ao ano)"}
-              valuesForm={valuesForm}
-              setValuesForm={setValuesForm}
-              change={indexType.FIXADO}
-            />
-            <PercentageInput
-              label={"CDI (ao ano)"}
-              valuesForm={valuesForm}
-              setValuesForm={setValuesForm}
-              change={indexType.CDI}
-            />
-          </Flex>
-          <FlexButton>
-            <button
-              onClick={(e) => {
-                resetValues(e);
+              >
+                <AiOutlineCheck />
+                FIXADO
+              </button>
+            </FlexButtonIndex>
+          </ContainerButtons>
+        </Flex>
+        <Flex></Flex>
+        <Flex>
+          <MoneyInput
+            label={"Aporte Inicial"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            errorsForm={errorsForm}
+            setErrorsForm={setErrorsForm}
+            change={"contribuition"}
+          />
+          <MoneyInput
+            label={"Aporte Mensal"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            errorsForm={errorsForm}
+            setErrorsForm={setErrorsForm}
+            change={"monthContribuition"}
+          />
+        </Flex>
+        <Flex>
+          <ContentInput errors={errorsForm.deadline}>
+            <label>Prazo (em meses)</label>
+            <NumberFormat
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                parseInt(e.target.value) < 1 || parseInt(e.target.value) > 24
+                  ? setErrorsForm({ ...errorsForm, deadline: true })
+                  : setErrorsForm({ ...errorsForm, deadline: false });
+                setValuesForm({
+                  ...valuesForm,
+                  deadline: parseInt(e.target.value).toString(),
+                });
               }}
-            >
-              Limpar campos
-            </button>
-            <button disabled={disabled} type="submit">
-              Simular
-            </button>
-          </FlexButton>
-        </form>
-      </Container>
-    );
-  }
-
-  return <></>;
+              value={valuesForm.deadline}
+              decimalScale={0}
+            />
+            <h3>Valor invalido</h3>
+          </ContentInput>
+          <PercentageInput
+            label={"Rentabilidade"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            errorsForm={errorsForm}
+            setErrorsForm={setErrorsForm}
+            change={"profitability"}
+          />
+        </Flex>
+        <Flex>
+          <PercentageInput
+            label={"IPCA (ao ano)"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            change={indexType.FIXADO}
+          />
+          <PercentageInput
+            label={"CDI (ao ano)"}
+            valuesForm={valuesForm}
+            setValuesForm={setValuesForm}
+            change={indexType.CDI}
+          />
+        </Flex>
+        <FlexButton>
+          <button
+            onClick={(e) => {
+              resetValues(e);
+            }}
+          >
+            Limpar campos
+          </button>
+          <button disabled={disabled} type="submit">
+            Simular
+          </button>
+        </FlexButton>
+      </form>
+    </Container>
+  );
 };
 
 export const Container = styled.div`

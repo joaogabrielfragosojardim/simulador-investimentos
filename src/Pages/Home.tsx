@@ -1,12 +1,13 @@
-import { Form } from "../components/Form";
-import { Dashboard } from "../components/Dashboard";
-import { Title } from "../components/Title";
-import { SubTitle } from "../components/SubTitle";
-
-import { useState, useEffect } from "react";
-import { api } from "../services/api";
-
+import { useState } from "react";
+import { useQuery } from "react-query";
 import styled from "styled-components";
+import { Dashboard } from "../components/Dashboard";
+import { Error } from "../components/Error";
+import { Form } from "../components/Form";
+import { Loading } from "../components/Loading";
+import { SubTitle } from "../components/SubTitle";
+import { Title } from "../components/Title";
+import { getIndicators } from "../services/getIndicators";
 
 export interface IDataDashboard {
   valorFinalBruto?: number;
@@ -22,6 +23,7 @@ export interface IDataDashboard {
 }
 
 export const Home = () => {
+  //Por se tratar de uma aplicação single page optei por deixar os estados dentro da Home e não utilizar Context API
   const initialValuesForm = {
     yeld: "",
     indexType: "",
@@ -43,15 +45,21 @@ export const Home = () => {
 
   const [dataDashboard, setDataDashboard] = useState<IDataDashboard>({});
 
-  useEffect(() => {
-    api.get("/indicadores").then((resp) => {
+  //Utilização do useQuery para melhor trabalho com a requisição
+  const { isLoading, error } = useQuery("indicators", () => getIndicators(), {
+    onSuccess: (data) => {
       setValuesForm({
         ...valuesForm,
-        CDI: resp.data[0].valor,
-        IPCA: resp.data[1].valor,
+        IPCA: data?.IPCA,
+        CDI: data?.CDI,
       });
-    });
-  }, []);
+    },
+    staleTime: 1000 * 30, // 30 minutos
+  });
+
+  if (isLoading) return <Loading />;
+
+  if (error) return <Error />;
 
   return (
     <>
