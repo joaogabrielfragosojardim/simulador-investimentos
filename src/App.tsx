@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Home } from "./renaming/Home";
+import { Home } from "./pages/Home";
 
 const queryClient = new QueryClient();
 
