@@ -4,26 +4,19 @@ import { theme } from "../styles/theme";
 
 import { BarChart, Bar, XAxis, ResponsiveContainer } from "recharts";
 
-interface iProps {
+interface IProps {
   dataDashboard: IDataDashboard;
 }
 
-interface iCards {
+interface ICards {
   green?: boolean;
 }
 
-interface iContribuition {
+interface IContribuition {
   color: string;
 }
 
-export const Dashboard = ({ dataDashboard }: iProps) => {
-  const toRealMoney = (money: number | undefined) => {
-    return money?.toLocaleString("pt-br", {
-      style: "currency",
-      currency: "BRL",
-    });
-  };
-
+export const Dashboard = ({ dataDashboard }: IProps) => {
   const valuesWithContribuition = dataDashboard.graficoValores?.comAporte
     ? Object.values(dataDashboard.graficoValores?.comAporte)
     : [];
@@ -43,7 +36,7 @@ export const Dashboard = ({ dataDashboard }: iProps) => {
       <ContainerCards>
         <Cards>
           <h3>Valor Final Bruto</h3>
-          <h4>{toRealMoney(dataDashboard.valorFinalBruto)}</h4>
+          <h4>{dataDashboard.valorFinalBruto}</h4>
         </Cards>
         <Cards>
           <h3>Alíquota IR</h3>
@@ -51,19 +44,19 @@ export const Dashboard = ({ dataDashboard }: iProps) => {
         </Cards>
         <Cards>
           <h3>Valor Pago em IR</h3>
-          <h4>{toRealMoney(dataDashboard.valorPagoIR)}</h4>
+          <h4>{dataDashboard.valorPagoIR}</h4>
         </Cards>
         <Cards green={true}>
           <h3>Valor Final Líquido</h3>
-          <h4>{toRealMoney(dataDashboard.valorFinalLiquido)}</h4>
+          <h4>{dataDashboard.valorFinalLiquido}</h4>
         </Cards>
         <Cards>
           <h3>Valor Total Investido</h3>
-          <h4>{toRealMoney(dataDashboard.valorTotalInvestido)}</h4>
+          <h4>{dataDashboard.valorTotalInvestido}</h4>
         </Cards>
         <Cards green={true}>
           <h3>Ganho Líquido</h3>
-          <h4>{toRealMoney(dataDashboard.ganhoLiquido)}</h4>
+          <h4>{dataDashboard.ganhoLiquido}</h4>
         </Cards>
       </ContainerCards>
       <ContainerChart>
@@ -122,7 +115,7 @@ export const ContainerCards = styled.div`
   }
 `;
 
-export const Cards = styled.div<iCards>`
+export const Cards = styled.div<ICards>`
   text-align: center;
   padding: 5px 25px;
   box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.2);
@@ -174,7 +167,7 @@ export const ContainerInfos = styled.div`
   }
 `;
 
-export const Circles = styled.div<iContribuition>`
+export const Circles = styled.div<IContribuition>`
   width: 10px;
   height: 10px;
   border-radius: 50%;

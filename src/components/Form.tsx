@@ -11,6 +11,7 @@ import { yeldType } from "../constants/yeldType";
 import { api } from "../services/api";
 import { IDataDashboard } from "../pages/Home";
 import { useMutation } from "react-query";
+import { toRealMoney } from "../utils/toRealMoney";
 
 interface ISelectedButton {
   selected: string;
@@ -80,6 +81,16 @@ export const Form = ({
     {
       onSuccess: (data) => {
         const formatedData = data.data[0];
+        formatedData.valorFinalBruto = toRealMoney(
+          formatedData.valorFinalBruto
+        );
+        formatedData.valorFinalLiquido = toRealMoney(
+          formatedData.valorFinalLiquido
+        );
+        formatedData.valorTotalInvestido = toRealMoney(
+          formatedData.valorTotalInvestido
+        );
+
         setDataDashboard(formatedData);
       },
     }
