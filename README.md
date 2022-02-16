@@ -12,7 +12,7 @@ Simulador de investimentos feito para um desafio front-end
 ## 👾 Tecnologias
 
 * React
-* TypesCript
+* TypeScript
 * Styled Components
 * Axios
 * React Query
