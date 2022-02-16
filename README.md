@@ -21,7 +21,7 @@ Simulador de investimentos feito para um desafio front-end
 
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
-* Você instalou a versão mais recente do `node.js`
+* Você instalou o `node.js v14+`
 * `NPM` || `Yarn`
 
 ## 🚀 Instalando Simulador de investimentos
